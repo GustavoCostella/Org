@@ -11,7 +11,6 @@ maisq3: .string "            @@@@@@@@ @@@@@@, @@@@@@@@@@   @@@@@@     ,@@@@ *@@@
 
 	.text
 main:
-	la t0, matriz
 	li a7,4
 	la a0, bemvindo
 	ecall
@@ -44,11 +43,26 @@ lemat:
 	ecall	
 	li a7, 5
 	ecall 
-	li a7,4
-	la a0, matriz
+	la a1,matriz
+	add t4,a0,zero
+	add t3,t4,zero
+	mul t1,t4,t3
+	mv t3,zero
+	j montamat
+montamat:
+	beq t1,t2,menu_princ
+	addi t2,t3,1
+	mv t3,t2
+	la a0, entrada
+	li a7, 4
 	ecall
-	li a7,5
+	li a7, 5
 	ecall
+	sw a0,0(a1)
+	addi t5,a1,4
+	sw a1,t5
+	j montamat
+
 printmat:
 	
 	
