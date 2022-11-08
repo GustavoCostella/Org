@@ -1,4 +1,5 @@
 	.data 
+tamanho: .word
 matriz: .space 144
 entrada: .string "Insira o numero: "
 hello: .string "Informe o que quer fazer: "
@@ -8,7 +9,7 @@ err1: .string "Valor incorreto, informe um tamanho valido!"
 err2: .string "Nao foi possivel calcular o valor do determinante!"
 print_menu: .string "1- Ler matriz \n 2- Imprimir matriz \n 3- Achar o maior valor \n 4- Ordenar a matriz \n 5- Calcular determinante (somente 3x3)\n 9- Sair do programa \n"
 maisq3: .string "            @@@@@@@@ @@@@@@, @@@@@@@@@@   @@@@@@     ,@@@@ *@@@@@@  %@@@@@@@@@  &@@@@@@@            \n             @@@@@@@     @@,   @@@@@@/      @@     @@@@@%     *@@@    @@@@@@%     @@.               \n             @@@@@@@   /& &   .@@@@@@/      @@    @@@@@@#      .@@    @@@@@@%   /@@                 \n             @@@@@@@  @@@     .@@@@@@/      @@   /@@@@@@#             @@@@@@%  @@@@#                \n             @@@@@@@ .@@@     .@@@@@@/      @@   %@@@@@@#             @@@@@@%,@@@@@@(               \n             @@@@@@@   &@     .@@@@@@/      @@    @@@@@@#             @@@@@@% @@@@@@@/              \n             @@@@@@@          .@@@@@@/      @&    /@@@@@#       @@    @@@@@@%  @@@@@@@.             \n             @@@@@@@.           @@@@@@    @@#       @@@@@    /@@     *@@@@@@@  .@@@@@@@(            \n                                     ..                  . .                                        \n                                   @@@@@*                  .                                        \n                                 &@       @@&           @%%%%&@                                     \n                                ,@            ,/#&@@@@@@@%%%%%&@/@@@@@@&/                           \n                                @&                 #@@@@@&%%%%%%%%%%%%&@  @@                        \n                                @@/              /@%%%%%%%%&,.%&%%%%%&@.  ,@                        \n                              .@.                 @&%%%%%%%@&%@%%%%%@@    %@                        \n                             @@                       (@@%%%%%%%%%%%%%@   @,                        \n                            @@                         @%%%%%&@@@&%%%@@  /@                         \n                      @@@@@@@@#                         @@@@@*           @.                         \n                           (@         @@                                 @,                         \n                        #@@@@@&(     @@@.                                @%                         \n                            *@                               ,,       @@@@@(                        \n                       .@@@(, @@               @(*&@        @@@(         @    .&                    \n                         @  @@@  @@             @@@&                 .@@@%                          \n                          @@     %@@@%                                (@.  .@                       \n                         @.    @@%%%%@@&@@%                        .@@@*                            \n                          @@%@@%%%%@@((((&@%%&@@@@&*.       .*@@@@,     &@*                         \n                              @@%@@((((((#@%%%%%%%%%@#(((@@@@@.                                     \n                                &@@.   (@@(@@@&&@@@&(((((%@%%&@@@@                                  \n                              @@          @@((((((((((((((@@@/    @(                                \n                            .@             @&(((((((((((((@#    (@.                                 \n                            @*             %@(((((((((((((&@  @@, %@                                \n                            @.             @#(((((((((((((&@                                        \n                            #@           .@%/(((((((((((((@@                                        \n                              @@      .@@@.    ,&@@@@@@@@@@.                                        \n                                 *@@&    @               %@                                         \n                                         @@             %@                                          \n                                          .@@#        *@*                                           \n                                                   .                                                \n                     %@@@@@@@@@  %@@@@@%    (@@@ @@@&       @@@@@@@@@.  &@@@@@.                     \n                       @@@@@@@     @@.   .@@@@@   .@@@@@     @@@@@@@      @@*                       \n                        @@@@@@@.  @@    @@@@@@@   .@@@@@@    @@@@@@@      *@                        \n                         @@@@@@@,,@    .@@@@@@@   .@@@@@@&   @@@@@@@      *@                        \n                          @@@@@@@(     (@@@@@@@   .@@@@@@@   @@@@@@@      *@                        \n                           @@@@@@@      @@@@@@@   .@@@@@@#   @@@@@@@      *@                        \n                           @@@@@@@      (@@@@@@   .@@@@@@    @@@@@@@      #@                        \n                           @@@@@@@        @@@@@   ,@@@@.     ,@@@@@@     @@.                        \n                          ////////(          ,@@ @@/             (@@@@ @(                           \n"
-
+virgula: .string ", "
 	.text
 main:
 	li a7,4
@@ -24,6 +25,8 @@ menu_princ:
 	ecall
 	li a7,5
 	ecall
+	la a1,matriz
+	la a2,tamanho
 	li t1,1
 	li t2,2
 	li t3,3
@@ -36,19 +39,21 @@ menu_princ:
 	beq t4,a0,ordmat
 	beq t5,a0,detmat
 	beq t6,a0,final
+	j menu_princ
 
 lemat:
 	li a7,4
 	la a0, matrix_type
 	ecall	
 	li a7, 5
-	ecall 
-	la a1,matriz
+	ecall 	
+	sw a0,0(a2)
 	add t4,a0,zero
 	add t3,t4,zero
 	mul t1,t4,t3
 	mv t3,zero
 	j montamat
+	
 montamat:
 	beq t1,t2,menu_princ
 	addi t2,t3,1
@@ -58,14 +63,23 @@ montamat:
 	ecall
 	li a7, 5
 	ecall
-	sw a0,0(a1)
-	addi t5,a1,4
-	sw a1,t5
+	sb a0,0(a1)
+	addi a1,a1,4
 	j montamat
 
 printmat:
-	
-	
+	lw t1, 0(a2)
+	mul t1,t1,t1
+	beq t1,t2,menu_princ
+	lb a0, 0(a1)
+	li a7, 1
+	ecall
+	la a0, virgula
+	li a7, 4
+	ecall
+	addi a1,a1,4
+	addi t2,t2,1
+	j printmat
 	
 maiomat:
 
