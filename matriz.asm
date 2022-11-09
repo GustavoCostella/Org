@@ -13,7 +13,7 @@ err2: .string "Nao foi possivel calcular o valor do determinante!"
 	.align 2
 print_menu: .string "\n 1- Ler matriz \n 2- Imprimir matriz \n 3- Achar o maior valor \n 4- Ordenar a matriz \n 5- Calcular determinante (somente 3x3)\n 9- Sair do programa \n"
 	.align 2
-maisq3: .string "            @@@@@@@@ @@@@@@, @@@@@@@@@@   @@@@@@     ,@@@@ *@@@@@@  %@@@@@@@@@  &@@@@@@@            \n             @@@@@@@     @@,   @@@@@@/      @@     @@@@@%     *@@@    @@@@@@%     @@.               \n             @@@@@@@   /& &   .@@@@@@/      @@    @@@@@@#      .@@    @@@@@@%   /@@                 \n             @@@@@@@  @@@     .@@@@@@/      @@   /@@@@@@#             @@@@@@%  @@@@#                \n             @@@@@@@ .@@@     .@@@@@@/      @@   %@@@@@@#             @@@@@@%,@@@@@@(               \n             @@@@@@@   &@     .@@@@@@/      @@    @@@@@@#             @@@@@@% @@@@@@@/              \n             @@@@@@@          .@@@@@@/      @&    /@@@@@#       @@    @@@@@@%  @@@@@@@.             \n             @@@@@@@.           @@@@@@    @@#       @@@@@    /@@     *@@@@@@@  .@@@@@@@(            \n                                     ..                  . .                                        \n                                   @@@@@*                  .                                        \n                                 &@       @@&           @%%%%&@                                     \n                                ,@            ,/#&@@@@@@@%%%%%&@/@@@@@@&/                           \n                                @&                 #@@@@@&%%%%%%%%%%%%&@  @@                        \n                                @@/              /@%%%%%%%%&,.%&%%%%%&@.  ,@                        \n                              .@.                 @&%%%%%%%@&%@%%%%%@@    %@                        \n                             @@                       (@@%%%%%%%%%%%%%@   @,                        \n                            @@                         @%%%%%&@@@&%%%@@  /@                         \n                      @@@@@@@@#                         @@@@@*           @.                         \n                           (@         @@                                 @,                         \n                        #@@@@@&(     @@@.                                @%                         \n                            *@                               ,,       @@@@@(                        \n                       .@@@(, @@               @(*&@        @@@(         @    .&                    \n                         @  @@@  @@             @@@&                 .@@@%                          \n                          @@     %@@@%                                (@.  .@                       \n                         @.    @@%%%%@@&@@%                        .@@@*                            \n                          @@%@@%%%%@@((((&@%%&@@@@&*.       .*@@@@,     &@*                         \n                              @@%@@((((((#@%%%%%%%%%@#(((@@@@@.                                     \n                                &@@.   (@@(@@@&&@@@&(((((%@%%&@@@@                                  \n                              @@          @@((((((((((((((@@@/    @(                                \n                            .@             @&(((((((((((((@#    (@.                                 \n                            @*             %@(((((((((((((&@  @@, %@                                \n                            @.             @#(((((((((((((&@                                        \n                            #@           .@%/(((((((((((((@@                                        \n                              @@      .@@@.    ,&@@@@@@@@@@.                                        \n                                 *@@&    @               %@                                         \n                                         @@             %@                                          \n                                          .@@#        *@*                                           \n                                                   .                                                \n                     %@@@@@@@@@  %@@@@@%    (@@@ @@@&       @@@@@@@@@.  &@@@@@.                     \n                       @@@@@@@     @@.   .@@@@@   .@@@@@     @@@@@@@      @@*                       \n                        @@@@@@@.  @@    @@@@@@@   .@@@@@@    @@@@@@@      *@                        \n                         @@@@@@@,,@    .@@@@@@@   .@@@@@@&   @@@@@@@      *@                        \n                          @@@@@@@(     (@@@@@@@   .@@@@@@@   @@@@@@@      *@                        \n                           @@@@@@@      @@@@@@@   .@@@@@@#   @@@@@@@      *@                        \n                           @@@@@@@      (@@@@@@   .@@@@@@    @@@@@@@      #@                        \n                           @@@@@@@        @@@@@   ,@@@@.     ,@@@@@@     @@.                        \n                          ////////(          ,@@ @@/             (@@@@ @(                           \n"
+maiorval: .string "maior valor eh: "
 	.align 2
 virgula: .string ", "
 	.align 2
@@ -39,18 +39,29 @@ menu_princ:
 	ecall
 	la a2,matriz
 	la a3,tamanho
-	li t1,1
-	li t2,2
-	li t3,3
-	li t4,4
-	li t5,5
-	li t6,6
-	beq t1,a0,lemat
-	beq t2,a0,printmat
-	beq t3,a0,maiomat
-	beq t4,a0,ordmat
-	beq t5,a0,detmat
-	beq t6,a0,final
+	mv t2,zero
+	mv t1,zero
+	mv t3,zero
+	mv t4,zero
+	mv t5,zero
+	mv t6,zero
+	mv s1,zero
+	mv a1,zero
+	mv a4,zero
+	mv a5,zero
+	mv a6,zero
+	li s2,1
+	li s3,2
+	li s4,3
+	li s5,4
+	li s6,5
+	li s7,9
+	beq s2,a0,lemat
+	beq s3,a0,printmat
+	beq s4,a0,maiomat
+	beq s5,a0,ordmat
+	beq s6,a0,detmat
+	beq s7,a0,final
 	j menu_princ
 
 lemat:
@@ -82,7 +93,6 @@ montamat:
 printmat:
 	lw t1, 0(a3)
 	mul t3,t1,t1
-	addi t3,t3,2
 	beq a1,t1,barran
 	lb a0, 0(a2)
 	li a7, 1
@@ -104,13 +114,61 @@ barran:
 	j printmat
 
 maiomat:
+	lw t1, 0(a3)
+	mul t1,t1,t1
+	beq t1,t2,maio
+	addi t2,t2,1
+	lb t3, 0(a2)
+	addi a2,a2,4
+	blt a0,t3,troca
+	j maiomat
 
+troca:
+	mv a0,t3
+	j maiomat
+	
+maio:
+	mv t1,a0
+	la a0,maiorval
+	li a7,4
+	ecall
+	mv a0,t1
+	li a7,1
+	ecall
+	j menu_princ
 
 ordmat:
+	la a3,tamanho
+	la a2,matriz
+	mv t2,zero
+	lw t1, 0(a3)
+	mul t1,t1,t1
+	addi s1,s1,-1
+	add a6,t1,s1
+	beqz a6,menu_princ
+	j bubble
+
+bubble:
+	beq a6,t2,ordmat
+	addi t2,t2,1
+	add a4,a2,zero
+	addi a4,a4,4
+	lb a0, 0(a4)
+	lb a1, 0(a2)
+	blt a0,a1,bub
+	addi a2,a2,4
+	mv t6,t2
+	j bubble
+	
+bub:
+	sb a1, 0(a4)
+	sb a0, 0(a2)
+	addi a2,a2,4
+	j bubble
 
 
 detmat:
-
+	
 
 final:
-	#mata o programa, pedir pro prof depois
+	wfi
